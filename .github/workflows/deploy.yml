@@ -8,6 +8,7 @@ on:
       - "docker-compose.yml"
       - "nginx/default.conf"
       - ".github/workflows/deploy.yml"
+      - ".github/deploy.sh"
   workflow_dispatch:
 jobs:
   deploy:
@@ -30,6 +31,6 @@ jobs:
           SSH_USER: ${{ secrets.REMOTE_SSH_USER }}
           SSH_KEY: ${{secrets.REMOTE_SSH_KEY}}
 
-      - name: Checkout
+      - name: deploy
         run: |
           ssh remote 'curl -s "https://raw.githubusercontent.com/onedb-document/gateway/master/.github/deploy.sh" | bash'

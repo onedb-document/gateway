@@ -12,4 +12,4 @@ cd ~/gh-projects/gateway
 
 docker-compose up -d
 
-echo '仓库准备完毕'
+echo '运行成功'
