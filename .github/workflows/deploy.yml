@@ -32,8 +32,4 @@ jobs:
 
       - name: Checkout
         run: |
-          ssh remote 'mkdir -p ~/gh-projects/ & cd ~/gh-projects/'
-          ssh remote 'if [ -d "gateway" ]; then cd gateway & git checkout master & git pull; fi'
-          ssh remote 'if [ ! -d "gateway" ]; then git clone "https://github.com/onedb-document/gateway.git"; fi'
-          ssh remote 'echo 仓库准备完毕'
-          ssh remote 'docker-compose up -d'
+          ssh remote 'curl -s "https://raw.githubusercontent.com/onedb-document/gateway/master/.github/deploy.sh" | bash'
