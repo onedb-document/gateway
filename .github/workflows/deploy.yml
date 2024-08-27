@@ -1,0 +1,34 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "docker-compose.yml"
+      - "nginx/default.conf"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/remote.key
+          chmod 600 ~/.ssh/remote.key
+          cat >>~/.ssh/config <<END
+          Host remote
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/remote.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_HOST: ${{ secrets.REMOTE_SSH_HOST }}
+          SSH_USER: ${{ secrets.REMOTE_SSH_USER }}
+          SSH_KEY: ${{secrets.REMOTE_SSH_KEY}}
+
+      - name: Checkout
+        run: ssh remote 'echo hello'
