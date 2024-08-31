@@ -10,6 +10,15 @@ on:
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
   workflow_call:
+    secrets:
+      REMOTE_SSH_HOST:
+        required: true
+      REMOTE_SSH_USER:
+        required: true
+      REMOTE_SSH_KEY:
+        required: true
+      REMOTE_SSH_PORT:
+        required: true
 
 jobs:
   deploy:
