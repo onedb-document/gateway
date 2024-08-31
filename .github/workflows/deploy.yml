@@ -15,23 +15,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Configure SSH
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/remote.key
-          chmod 600 ~/.ssh/remote.key
-          cat >>~/.ssh/config <<END
-          Host remote
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/remote.key
-            StrictHostKeyChecking no
-          END
-        env:
-          SSH_HOST: ${{ secrets.REMOTE_SSH_HOST }}
-          SSH_USER: ${{ secrets.REMOTE_SSH_USER }}
-          SSH_KEY: ${{secrets.REMOTE_SSH_KEY}}
-
-      - name: deploy
-        run: |
-          ssh remote 'curl -s "https://raw.githubusercontent.com/onedb-document/gateway/master/.github/deploy.sh" | bash'
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_SSH_HOST }}
+          username: ${{ secrets.REMOTE_SSH_USER }}
+          key: ${{ secrets.REMOTE_SSH_KEY }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          script: |
+            whoami
+            echo '开始执行部署任务'
+            rm -rf ~/gh-projects/gateway
+            git clone "https://github.com/onedb-document/gateway.git" ~/gh-projects/gateway
+            cd ~/gh-projects/gateway
+            echo '仓库准备完毕，启动服务'
+            docker-compose up -d --pull always
+            echo '运行成功'

@@ -3,6 +3,7 @@ services:
   gateway-svc:
     image: nginx:latest
     container_name: gateway
+    restart: always
     environment:
       - TZ=Asia/Shanghai
     ports:
